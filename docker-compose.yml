@@ -124,6 +124,5 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
-    restart: unless-stopped
     expose:
       - "6379"
