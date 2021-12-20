@@ -1,0 +1,10 @@
+version: '3.1'
+
+# Description: Customize memory settings
+
+services:
+  db:
+    command: postgres -c "shared_buffers=12GB" -c "shared_preload_libraries=pg_amqp.so" -c "max_connections=500"
+  search:
+    environment:
+      - SOLR_HEAP=12g
