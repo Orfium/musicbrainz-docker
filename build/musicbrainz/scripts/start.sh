@@ -17,4 +17,4 @@ then
   cron -f &
 fi
 
-start_server --port=5000 -- plackup -I lib -s Starlet -E deployment --max-workers ${MUSICBRAINZ_SERVER_PROCESSES} --pid fcgi.pid
+start_server --port=5000 -- plackup -I lib -s Starlet -E deployment --max-workers ${MUSICBRAINZ_SERVER_PROCESSES} --pid fcgi.pid --max-keepalive-reqs=20 --keepalive-timeout=20
