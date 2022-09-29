@@ -50,13 +50,13 @@ RUN mkdir -p /usr/local/share/keyrings && \
         zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
-ARG MUSICBRAINZ_SERVER_VERSION=v-2022-05-16-schema-change
+ARG MUSICBRAINZ_SERVER_VERSION=v-2022-09-06
 LABEL org.metabrainz.musicbrainz-server.version="${MUSICBRAINZ_SERVER_VERSION}"
 RUN git clone --depth=1 --branch $MUSICBRAINZ_SERVER_VERSION https://github.com/metabrainz/musicbrainz-server.git musicbrainz-server
 
 WORKDIR /musicbrainz-server
 
-ARG NODE_VERSION=16.1.0
+ARG NODE_VERSION=16.16.0
 ARG PGP_SERVERS="keys.openpgp.org keyserver.ubuntu.com pgp.mit.edu"
 RUN cp docker/yarn_pubkey.txt /tmp/yarn-key.asc && \
     cd /tmp && \

@@ -42,7 +42,7 @@ This repo contains everything needed to run a musicbrainz mirror server with sea
 
 ### Recommended hardware/VM
 
-* CPU: 16 threads (or 2 without indexed search)
+* CPU: 16 threads (or 2 without indexed search), x86-64 architecture
 * RAM: 16 GB (or 4 without indexed search)
 * Disk Space: 200 GB (or 70 without indexed search)
             + system disk usage
@@ -81,7 +81,7 @@ If you use [UFW](https://help.ubuntu.com/community/UFW) to manage your firewall:
 
 ## Components version
 
-* Current MB Branch: [v-2022-05-16-schema-change](build/musicbrainz/Dockerfile#L53)
+* Current MB Branch: [v-2022-09-06](build/musicbrainz/Dockerfile#L53)
 * Current DB_SCHEMA_SEQUENCE: [27](build/musicbrainz/Dockerfile#L129)
 * Postgres Version: [12](docker-compose.yml)
   (can be changed by setting the environment variable `POSTGRES_VERSION`)
@@ -99,6 +99,14 @@ Download this repository and change current working directory with:
 ```bash
 git clone https://github.com/metabrainz/musicbrainz-docker.git
 cd musicbrainz-docker
+```
+
+If you want to mirror the Postgres database only (neither the website
+nor the web API), change the base configuration with the following
+command (as a first step, otherwise it will blank it out):
+
+```bash
+admin/configure with alt-db-only-mirror
 ```
 
 ### Build Docker images
@@ -168,6 +176,8 @@ Depending on your available ressources in CPU/RAM vs. bandwidth:
 
   (This option is known to take 4½ hours with 16 CPU threads and 16 GB RAM.)
 
+  To index cores individually, rather than all at once, add `--entity-type CORE` (any number of times) to the command above. For example `sudo docker-compose exec indexer python -m sir reindex --entity-type artist --entity-type release`
+
 * Or download pre-built search indexes based on the latest data dump:
 
   ```bash
@@ -209,7 +219,7 @@ sudo docker-compose up -d
 Run replication script once to catch up with latest database updates:
 
 ```bash
-sudo docker-compose exec musicbrainz replication.sh &
+sudo bash -c 'docker-compose exec musicbrainz replication.sh &' && \
 sudo docker-compose exec musicbrainz /usr/bin/tail -f mirror.log
 ```
 
@@ -390,6 +400,13 @@ To publish ports of services `db`, `mq`, `redis` and `search`
 
 ```bash
 admin/configure add publishing-all-ports
+sudo docker-compose up -d
+```
+
+If you are running a database only mirror, run this instead:
+
+```bash
+admin/configure add publishing-db-port
 sudo docker-compose up -d
 ```
 

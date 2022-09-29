@@ -15,7 +15,7 @@ RUN curl -sSLO --retry 5 https://github.com/jwilder/dockerize/releases/download/
     tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
     rm -f dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-ARG NODE_VERSION=16.1.0
+ARG NODE_VERSION=16.16.0
 ARG PGP_SERVERS="keys.openpgp.org keyserver.ubuntu.com pgp.mit.edu"
 ARG POSTGRES_VERSION=12
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -66,6 +66,8 @@ RUN mkdir -p /usr/local/share/keyrings && \
         gettext \
         g++ \
         git \
+        # Needed to generate SVG from database schema DOT diagrams
+        graphviz \
         language-pack-de \
         language-pack-el \
         language-pack-es \
@@ -91,6 +93,8 @@ RUN mkdir -p /usr/local/share/keyrings && \
         # Needed for Unicode::ICU::Collator
         pkg-config \
         postgresql-${POSTGRES_VERSION} \
+        # Needed to normalize database schema SVG diagrams
+        scour \
         # Needed to decompress sample data
         xz-utils \
         yarn \
@@ -99,6 +103,7 @@ RUN mkdir -p /usr/local/share/keyrings && \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /musicbrainz-server
+RUN git config --global --add safe.directory /musicbrainz-server
 
 COPY DBDefs.pm /
 COPY scripts/* /usr/local/bin/
