@@ -77,6 +77,7 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
+    restart: unless-stopped
     volumes:
       - ${SIR_CONFIG_PATH:-./default/indexer.ini}:/code/config.ini
     depends_on:
@@ -126,5 +127,6 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
+    restart: unless-stopped
     expose:
       - "6379"
